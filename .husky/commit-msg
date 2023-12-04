@@ -1,4 +1,4 @@
-#!/bin/sh
+te#!/bin/sh
 . "$(dirname "$0")/\_/husky.sh"
 
 while read line; do # Skip comments
