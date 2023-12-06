@@ -1,3 +1,7 @@
+import debug from 'debug';
+
+const debugInstance = debug('ProjectFinal:monument:repo');
+
 export interface Repository<X extends { id: unknown }> {
   getAll(): Promise<X[]>;
   getById?(_id: X['id']): Promise<X>;
@@ -7,3 +11,4 @@ export interface Repository<X extends { id: unknown }> {
   update?(_id: X['id'], _updatedItem: Partial<X>): Promise<X>;
   delete?(_id: X['id']): Promise<void>;
 }
+debugInstance('Instantiated');

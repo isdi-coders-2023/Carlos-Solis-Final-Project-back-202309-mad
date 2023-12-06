@@ -3,7 +3,7 @@ import mongoose, { Error } from 'mongoose';
 import { HttpError } from '../types/http.error.js';
 import createDebug from 'debug';
 
-const debug = createDebug('EPV:error:middleware');
+const debug = createDebug('ProjectFinal:middleware');
 
 debug('Starting');
 export const errorMiddleware = (

@@ -2,9 +2,9 @@
 import { v2 as cloudinary } from 'cloudinary';
 import createDebug from 'debug';
 import { ImgData } from '../types/img.data.js';
-import { HttpError } from '../types/http.error';
+import { HttpError } from '../types/http.error.js';
 
-const debug = createDebug('W8E:mediaFiles');
+const debug = createDebug('ProjectFinal:mediaFiles');
 
 export class MediaFiles {
   constructor() {

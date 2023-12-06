@@ -4,7 +4,7 @@ import { HttpError } from '../types/http.error.js';
 import { Auth } from '../services/auth.js';
 import { UserMongoRepo } from '../repos/users/users.mongo.repo.js';
 
-const debug = createDebug('FinalProject:auth:interceptor');
+const debug = createDebug('ProjectFinal:interceptor');
 
 export class AuthInterceptor {
   constructor() {

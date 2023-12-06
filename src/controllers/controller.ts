@@ -1,15 +1,24 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable no-useless-constructor */
 import { NextFunction, Request, Response } from 'express';
-import { Repository } from '../repos/repo';
+import { Repository } from '../repos/repo.js';
+/* eslint-disable no-unused-vars */
 
 export abstract class Controller<T extends { id: unknown }> {
   constructor(protected repo: Repository<T>) {}
 
-  async getAll(req: Request, res: Response, next: NextFunction) {
+  async getAll(_req: Request, res: Response, next: NextFunction) {
     try {
       const data = await this.repo.getAll();
       res.json(data);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await this.repo.getById(req.params.id);
+      res.json(result);
     } catch (error) {
       next(error);
     }

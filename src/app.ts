@@ -4,9 +4,9 @@ import morgan from 'morgan';
 // Import { monumentsRouter } from './routers/monuments.routes.js';
 import createDebug from 'debug';
 import { errorMiddleware } from './middleware/error.middleware.js';
-import { userRouter } from './router/users.routes.js';
+import { userRouter } from './router/users.router.js';
 
-const debug = createDebug('FinalProject:app');
+const debug = createDebug('ProjectFinal:app');
 
 export const app = express();
 debug('Starting');

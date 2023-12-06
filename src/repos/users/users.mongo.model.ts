@@ -1,5 +1,9 @@
 import { Schema, model } from 'mongoose';
 import { User } from '../../entities/user.js';
+import debug from 'debug';
+
+const debugInstance = debug('ProjectFinal:users:model');
+debugInstance('Instantiated');
 
 const usersSchema = new Schema<User>({
   email: {
@@ -17,7 +21,6 @@ const usersSchema = new Schema<User>({
   },
   surname: {
     type: String,
-    required: true,
   },
 });
 
