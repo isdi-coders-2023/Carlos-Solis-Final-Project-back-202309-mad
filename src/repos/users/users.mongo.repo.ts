@@ -29,4 +29,10 @@ export class UsersMongoRepo implements Repository<User> {
     const result = await UserModel.find().exec();
     return result;
   }
+
+  async getById(id: string): Promise<User> {
+    const result = await UserModel.findById(id).exec();
+    if (!result) throw new HttpError(404, 'Not Found', 'GetByid not possible');
+    return result;
+  }
 }
