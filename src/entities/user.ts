@@ -1,10 +1,16 @@
+import { Monument } from './monument.model.js';
+
 export type LoginUser = {
-  passwd: string;
   email: string;
+  passwd: string;
+  id: string;
+  name: string;
+  surname: string;
+  monuments: Monument[];
 };
 export type User = LoginUser & {
   id: string;
   name: string;
   surname: string;
-  monuments: User[];
+  monuments: Monument[];
 };

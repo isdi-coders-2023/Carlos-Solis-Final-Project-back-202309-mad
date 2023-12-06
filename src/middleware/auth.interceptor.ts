@@ -2,7 +2,7 @@ import createDebug from 'debug';
 import { NextFunction, Request, Response } from 'express';
 import { HttpError } from '../types/http.error.js';
 import { Auth } from '../services/auth.js';
-import { UsersMongoRepo } from '../repos/users/users.mongo.repo.js';
+import { UserMongoRepo } from '../repos/users/users.mongo.repo.js';
 
 const debug = createDebug('FinalProject:auth:interceptor');
 
@@ -30,7 +30,7 @@ export class AuthInterceptor {
     try {
       const userID = req.body.id;
       const userToAddID = req.params.id;
-      const repoUsers = new UsersMongoRepo();
+      const repoUsers = new UserMongoRepo();
       const user = await repoUsers.getById(userToAddID);
       if (user.id !== userID)
         throw new HttpError(401, 'Unauthorized', 'User not valid');
