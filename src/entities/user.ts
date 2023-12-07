@@ -1,10 +1,16 @@
-import { ImgData } from '../types/img.data';
+import { Monument } from './monument.model.js';
 
-export type User = {
-  password: string;
+export type LoginUser = {
   email: string;
+  passwd: string;
   id: string;
   name: string;
   surname: string;
-  image: ImgData;
+  monuments: Monument[];
+};
+export type User = LoginUser & {
+  id: string;
+  name: string;
+  surname: string;
+  monuments: Monument[];
 };

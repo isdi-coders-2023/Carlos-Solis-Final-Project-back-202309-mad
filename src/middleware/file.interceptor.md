@@ -4,6 +4,7 @@ import multer from 'multer';
 export class FileInterceptor {
   singleFileStore(fileName = 'file', fileSize = 8_000_000) {
     const options: multer.Options = {
+      // Alt dest: 'uploads',
       storage: multer.diskStorage({
         destination: './public/uploads',
         filename(_req, file, callback) {
@@ -14,16 +15,13 @@ export class FileInterceptor {
       limits: { fileSize },
     };
 
-    const middleware = multer(options).single(fileName); // Para subir varias imágenes: aquí se pondría fields
-    // Save as req.file is the 'fileName' file
+    const middleware = multer(options).single(fileName);
+    // Save as req.file is the `fileName` file
     // req.body will hold the text fields, if there were any
-
-    // Existiría el req.files, sería aconsejable ampliar el middleware con un fieldFileStore
 
     return (req: Request, res: Response, next: NextFunction) => {
       const previousBody = req.body;
       middleware(req, res, next);
-
       req.body = { ...previousBody, ...req.body };
     };
   }
