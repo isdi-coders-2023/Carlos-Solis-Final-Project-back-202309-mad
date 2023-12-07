@@ -2,16 +2,15 @@ import createDebug from 'debug';
 import { NextFunction, Request, Response } from 'express';
 import { HttpError } from '../types/http.error.js';
 import { Auth } from '../services/auth.js';
-import { UserMongoRepo } from '../repos/users/users.mongo.repo.js';
 
-const debug = createDebug('ProjectFinal:interceptor');
+const debug = createDebug('W8E:auth:interceptor');
 
 export class AuthInterceptor {
   constructor() {
     debug('Instantiated');
   }
 
-  authorization(req: Request, _res: Response, next: NextFunction) {
+  authorization(req: Request, res: Response, next: NextFunction) {
     try {
       const tokenHeader = req.get('Authorization');
       if (!tokenHeader?.startsWith('Bearer'))
@@ -20,20 +19,6 @@ export class AuthInterceptor {
       const tokenPayload = Auth.verifyAndGetPayload(token);
       req.body.userId = tokenPayload.id;
       req.body.tokenRole = tokenPayload.role;
-      next();
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  async authentication(req: Request, _res: Response, next: NextFunction) {
-    try {
-      const userID = req.body.id;
-      const userToAddID = req.params.id;
-      const repoUsers = new UserMongoRepo();
-      const user = await repoUsers.getById(userToAddID);
-      if (user.id !== userID)
-        throw new HttpError(401, 'Unauthorized', 'User not valid');
       next();
     } catch (error) {
       next(error);
