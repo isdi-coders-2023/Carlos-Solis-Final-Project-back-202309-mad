@@ -35,6 +35,11 @@ describe('Given UsersMongoRepo', () => {
       expect(exec).toHaveBeenCalled();
       expect(result).toBe('Test');
     });
+    test('Then it should execute GetById', async () => {
+      const result = await repo.getById('');
+      expect(exec).toHaveBeenCalled();
+      expect(result).toBe('Test');
+    });
 
     test('Then, when data isnt found with the getById() method', () => {
       const mockExec = jest.fn().mockResolvedValueOnce(null);
@@ -48,6 +53,11 @@ describe('Given UsersMongoRepo', () => {
       const result = await repo.create({} as Omit<User, 'id'>);
       expect(Auth.hash).toHaveBeenCalled();
       expect(UserModel.create).toHaveBeenCalled();
+      expect(result).toBe('Test');
+    });
+    test('Then it should execute update', async () => {
+      const result = await repo.update('', { name: 'Test' });
+      expect(exec).toHaveBeenCalled();
       expect(result).toBe('Test');
     });
 

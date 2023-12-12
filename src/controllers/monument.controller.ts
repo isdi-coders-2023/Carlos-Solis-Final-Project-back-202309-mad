@@ -1,13 +1,12 @@
-import { Monument } from '../entities/monument.model';
-
+import { Monument } from '../entities/monument.model.js';
+import { MonumentsMongoRepo } from '../repos/monuments/monuments.mongo.repo.js';
 import createDebug from 'debug';
 import { Controller } from './controller.js';
 import { NextFunction, Request, Response } from 'express';
 import { HttpError } from '../types/http.error.js';
 import { MediaFiles } from '../services/media.file.js';
-import { MonumentsMongoRepo } from '../repos/monuments/monuments.mongo.repo.js';
 
-const debug = createDebug('ProjectFinal:monumentcontroller');
+const debug = createDebug('ProjectFinal:monument:controller');
 
 export class MonumentController extends Controller<Monument> {
   declare cloudinaryService: MediaFiles;
@@ -21,7 +20,7 @@ export class MonumentController extends Controller<Monument> {
     try {
       req.body.author = { id: req.body.userId };
       if (!req.file)
-        throw new HttpError(406, 'Not Acceptable', 'Multer file is invalid');
+        throw new HttpError(406, 'Not Acceptable', ' Invalid multer file');
       const imgData = await this.cloudinaryService.uploadImage(req.file.path);
       req.body.img = imgData;
       super.create(req, res, next);
@@ -31,21 +30,25 @@ export class MonumentController extends Controller<Monument> {
   }
 
   async update(req: Request, res: Response, next: NextFunction) {
-    req.body.author = { id: req.body.userId };
-    if (req.file) {
-      const imgData = await this.cloudinaryService.uploadImage(req.file.path);
+    try {
+      req.body.author = req.body.userId;
+      if (req.file) {
+        const imgData = await this.cloudinaryService.uploadImage(req.file.path);
+        req.body.img = imgData;
+      }
 
-      req.body.modelImg = imgData;
+      const result = await this.repo.update(req.params.id, req.body);
+      res.json(result);
+    } catch (error) {
+      next(error);
     }
-
-    super.update(req, res, next);
   }
 
   async delete(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
       if (!id) {
-        throw new HttpError(400, 'Bad Request', 'Invalid ID');
+        throw new HttpError(400, 'Bad Request', 'ID is missing');
       }
 
       await this.repo.delete(id);

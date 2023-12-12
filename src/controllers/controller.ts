@@ -1,7 +1,7 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-useless-constructor */
 import { NextFunction, Request, Response } from 'express';
-import { Repository } from '../repos/repo.js';
-/* eslint-disable no-unused-vars */
+import { Repository } from '../repos/repo';
 
 export abstract class Controller<T extends { id: unknown }> {
   constructor(protected repo: Repository<T>) {}
@@ -18,6 +18,17 @@ export abstract class Controller<T extends { id: unknown }> {
   async getById(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await this.repo.getById(req.params.id);
+      res.json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async create(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await this.repo.create(req.body);
+      res.status(201);
+      res.statusMessage = 'Created';
       res.json(result);
     } catch (error) {
       next(error);
@@ -47,17 +58,6 @@ export abstract class Controller<T extends { id: unknown }> {
       } else {
         throw new Error('Delete method is not defined');
       }
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  async create(req: Request, res: Response, next: NextFunction) {
-    try {
-      const result = await this.repo.create(req.body);
-      res.status(201);
-      res.statusMessage = 'Created';
-      res.json(result);
     } catch (error) {
       next(error);
     }

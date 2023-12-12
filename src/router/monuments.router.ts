@@ -5,7 +5,7 @@ import { MonumentController } from '../controllers/monument.controller.js';
 import { FileInterceptor } from '../middleware/file.interceptor.js';
 import { AuthInterceptor } from '../middleware/auth.interceptor.js';
 
-const debug = createDebug('ProjectFinal:Monumentsrouter');
+const debug = createDebug('ProjectFinal:monuments:router');
 debug('Loaded');
 
 const repo = new MonumentsMongoRepo();

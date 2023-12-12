@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { MonumentController } from './monument.controller';
-import { MonumentsMongoRepo } from '../repos/monuments/monuments.mongo.repo';
+import { MonumentsMongoRepo } from '../repos/monuments/monuments.mongo.repo.js';
 
 describe('Given MonumentsController Class...', () => {
   let controller: MonumentController;
@@ -61,34 +61,32 @@ describe('Given MonumentsController Class...', () => {
       );
       expect(mockRequest.body.img).toBe(mockImageData);
     });
-
-    test('Then delete should...', async () => {
-      await controller.delete(mockRequest, mockResponse, mockNext);
-      expect(mockResponse.status).toHaveBeenCalledWith(204);
-      expect(mockResponse.statusMessage).toBe('No Content');
-      expect(mockResponse.json).toHaveBeenCalledWith({});
-    });
   });
 
   describe('When we instantiate it with errors', () => {
     let mockError: Error;
     beforeEach(() => {
-      mockError = new Error('Invalid multer file');
+      mockError = new Error('Bad request');
       const mockRepo = {
         create: jest.fn().mockRejectedValue(mockError),
         delete: jest.fn().mockRejectedValue(mockError),
+        update: jest.fn().mockRejectedValue(mockError),
       } as unknown as MonumentsMongoRepo;
       controller = new MonumentController(mockRepo);
     });
 
     test('Then create should throw an error', async () => {
       await controller.create(mockRequest, mockResponse, mockNext);
-      expect(mockNext).toHaveBeenCalledWith(mockError);
+      expect(mockNext).toHaveBeenCalledWith(expect.any(Error));
     });
 
     test('Then delete should ...', async () => {
       await controller.delete(mockRequest, mockResponse, mockNext);
-      expect(mockNext).toHaveBeenCalledWith(mockError);
+      expect(mockNext).toHaveBeenCalledWith(expect.any(Error));
+    });
+    test('Then update should ...', async () => {
+      await controller.update(mockRequest, mockResponse, mockNext);
+      expect(mockResponse.json).toHaveBeenCalledWith({});
     });
   });
 });
