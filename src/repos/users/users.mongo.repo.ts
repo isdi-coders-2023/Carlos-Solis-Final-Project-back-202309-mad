@@ -1,11 +1,11 @@
 import createDebug from 'debug';
-import { LoginUser, User } from '../../entities/user.js';
-import { Repository } from '../repo.js';
+import { LoginUser, User } from '../../entities/user';
+import { Repository } from '../repo';
 import { UserModel } from './users.mongo.model.js';
 import { Auth } from '../../services/auth.js';
 import { HttpError } from '../../types/http.error.js';
 
-const debug = createDebug('ProjectFinal:users:mongo:repo');
+const debug = createDebug('FinalProject:users:mongo:repo');
 export class UserMongoRepo implements Repository<User> {
   constructor() {
     debug('Instanciated');
@@ -25,7 +25,6 @@ export class UserMongoRepo implements Repository<User> {
   async create(newItem: Omit<User, 'id'>): Promise<User> {
     newItem.passwd = await Auth.hash(newItem.passwd);
     const result: User = await UserModel.create(newItem);
-    console.log(result);
     return result;
   }
 

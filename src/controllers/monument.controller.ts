@@ -6,7 +6,7 @@ import { NextFunction, Request, Response } from 'express';
 import { HttpError } from '../types/http.error.js';
 import { MediaFiles } from '../services/media.file.js';
 
-const debug = createDebug('ProjectFinal:monument:controller');
+const debug = createDebug('ProjectFinal:controller:monument');
 
 export class MonumentController extends Controller<Monument> {
   declare cloudinaryService: MediaFiles;
@@ -23,7 +23,8 @@ export class MonumentController extends Controller<Monument> {
         throw new HttpError(406, 'Not Acceptable', ' Invalid multer file');
       const imgData = await this.cloudinaryService.uploadImage(req.file.path);
       req.body.img = imgData;
-      super.create(req, res, next);
+      const result = await this.repo.create(req.body);
+      res.json(result);
     } catch (error) {
       next(error);
     }
@@ -32,6 +33,7 @@ export class MonumentController extends Controller<Monument> {
   async update(req: Request, res: Response, next: NextFunction) {
     try {
       req.body.author = req.body.userId;
+
       if (req.file) {
         const imgData = await this.cloudinaryService.uploadImage(req.file.path);
         req.body.img = imgData;
@@ -52,7 +54,8 @@ export class MonumentController extends Controller<Monument> {
       }
 
       await this.repo.delete(id);
-      res.status(204).end();
+      res.status(204);
+      res.statusMessage = 'No Content';
     } catch (error) {
       next(error);
     }

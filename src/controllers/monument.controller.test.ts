@@ -1,18 +1,17 @@
 import { NextFunction, Request, Response } from 'express';
-import { MonumentController } from './monument.controller';
+import { MonumentController } from './monument.controller.js';
 import { MonumentsMongoRepo } from '../repos/monuments/monuments.mongo.repo.js';
-
-describe('Given MonumentsController Class...', () => {
+describe('Given RecipesController Class...', () => {
   let controller: MonumentController;
   let mockRequest: Request;
   let mockResponse: Response;
   let mockNext: NextFunction;
   let mockRepo: jest.Mocked<MonumentsMongoRepo>;
 
-  beforeAll(() => {
+  beforeEach(() => {
     mockRequest = {
       body: {},
-      params: {},
+      params: { id: 'test' },
     } as unknown as Request;
 
     mockResponse = {
@@ -33,21 +32,23 @@ describe('Given MonumentsController Class...', () => {
     controller = new MonumentController(mockRepo);
   });
 
-  describe('When we create a new monument', () => {
-    test('Then the create method should create a new monument with the proper info and the right image...', async () => {
+  describe('When we create a new recipe', () => {
+    test('Then the create method should create a new recipe with the proper info and the right image...', async () => {
       const mockRequest = {
         file: {
           path: 'valid/path/to/image.jpg',
         },
         body: {},
+        params: { id: 'test' },
       } as unknown as Request;
 
       const mockNext = jest.fn();
       const mockRepo = {
         create: jest.fn(),
+        delete: jest.fn(),
       } as unknown as MonumentsMongoRepo;
       const controller = new MonumentController(mockRepo);
-      const mockImageData = { url: 'https://example.com/image.jpg' };
+      const mockImageData = 'Test';
       const mockCloudinaryService = {
         uploadImage: jest.fn().mockResolvedValue(mockImageData),
       };
@@ -61,6 +62,17 @@ describe('Given MonumentsController Class...', () => {
       );
       expect(mockRequest.body.img).toBe(mockImageData);
     });
+
+    test('Then update should...', async () => {
+      await controller.update(mockRequest, mockResponse, mockNext);
+      expect(mockResponse.json).toHaveBeenCalledWith({});
+    });
+
+    test('Then delete should...', async () => {
+      await controller.delete(mockRequest, mockResponse, mockNext);
+      expect(mockResponse.status).toHaveBeenCalledWith(204);
+      expect(mockResponse.statusMessage).toBe('No Content');
+    });
   });
 
   describe('When we instantiate it with errors', () => {
@@ -69,8 +81,8 @@ describe('Given MonumentsController Class...', () => {
       mockError = new Error('Bad request');
       const mockRepo = {
         create: jest.fn().mockRejectedValue(mockError),
-        delete: jest.fn().mockRejectedValue(mockError),
         update: jest.fn().mockRejectedValue(mockError),
+        delete: jest.fn().mockRejectedValue(mockError),
       } as unknown as MonumentsMongoRepo;
       controller = new MonumentController(mockRepo);
     });
@@ -80,13 +92,14 @@ describe('Given MonumentsController Class...', () => {
       expect(mockNext).toHaveBeenCalledWith(expect.any(Error));
     });
 
+    test('Then update should throw an error', async () => {
+      await controller.update(mockRequest, mockResponse, mockNext);
+      expect(mockNext).toHaveBeenCalledWith(expect.any(Error));
+    });
+
     test('Then delete should ...', async () => {
       await controller.delete(mockRequest, mockResponse, mockNext);
       expect(mockNext).toHaveBeenCalledWith(expect.any(Error));
-    });
-    test('Then update should ...', async () => {
-      await controller.update(mockRequest, mockResponse, mockNext);
-      expect(mockResponse.json).toHaveBeenCalledWith({});
     });
   });
 });

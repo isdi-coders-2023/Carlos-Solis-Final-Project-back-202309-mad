@@ -1,10 +1,10 @@
 /* eslint-disable camelcase */
-import createDebug from 'debug';
 import { v2 as cloudinary } from 'cloudinary';
+import createDebug from 'debug';
 import { ImgData } from '../types/img.data';
 import { HttpError } from '../types/http.error.js';
 
-const debug = createDebug('ProjectFinal:mediaFiles');
+const debug = createDebug('ProjectFinal:media:files');
 
 export class MediaFiles {
   constructor() {
@@ -13,35 +13,34 @@ export class MediaFiles {
       api_key: '366833462978475',
       api_secret: 'FX45i8ewBkM_wwRHHbLW7mgcWjk',
     });
+
     cloudinary.config({
-      secure: true,
+      secure: true, // Setting return "https" URLs
     });
 
-    debug('Instantiated:MediaFiles');
-    // Debug('Key', cloudinary.config().api_key);
+    debug('instanciated');
   }
 
-  async uploadImage(imgPath: string) {
+  async uploadImage(imagePath: string) {
     try {
-      const uploadApiResponse = await cloudinary.uploader.upload(imgPath, {
+      const uploadApiResponse = await cloudinary.uploader.upload(imagePath, {
         use_filename: true,
         unique_filename: false,
         overwrite: true,
       });
 
-      const imgData: ImgData = {
+      const avatar: ImgData = {
         url: uploadApiResponse.url,
-        publicId: uploadApiResponse.public_id,
-        size: uploadApiResponse.bytes,
+        publicId: uploadApiResponse.publicId,
+        size: uploadApiResponse.size,
         height: uploadApiResponse.height,
         width: uploadApiResponse.width,
         format: uploadApiResponse.format,
       };
-
-      return imgData;
+      return avatar;
     } catch (err) {
       const error = (err as { error: Error }).error as Error;
-      throw new HttpError(406, 'Not Acceptable', error.message);
+      throw new HttpError(406, 'Not acceptable', error.message);
     }
   }
 }
