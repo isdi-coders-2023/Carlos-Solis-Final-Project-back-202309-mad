@@ -4,19 +4,24 @@ import { v2 as cloudinary } from 'cloudinary';
 import { ImgData } from '../types/img.data';
 import { HttpError } from '../types/http.error.js';
 
-const debug = createDebug('AB:mediaFiles');
+const debug = createDebug('ProjectFinal:mediaFiles');
 
 export class MediaFiles {
   constructor() {
     cloudinary.config({
+      cloud_name: 'dr9thefkq',
+      api_key: '366833462978475',
+      api_secret: 'FX45i8ewBkM_wwRHHbLW7mgcWjk',
+    });
+    cloudinary.config({
       secure: true,
     });
 
-    debug('Instantiated');
+    debug('Instantiated:MediaFiles');
     // Debug('Key', cloudinary.config().api_key);
   }
 
-  async uploadImageToCloudinary(imgPath: string) {
+  async uploadImage(imgPath: string) {
     try {
       const uploadApiResponse = await cloudinary.uploader.upload(imgPath, {
         use_filename: true,

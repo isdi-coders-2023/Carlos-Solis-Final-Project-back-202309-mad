@@ -13,7 +13,7 @@ describe('Given Auth class', () => {
       (cloudinary.uploader.upload as jest.Mock).mockResolvedValue(
         {} as UploadApiResponse
       );
-      const result = await mediaFiles.uploadImageToCloudinary('');
+      const result = await mediaFiles.uploadImage('');
 
       expect(cloudinary.uploader.upload).toHaveBeenCalled();
       expect(result).toEqual({} as ImgData);
@@ -26,7 +26,7 @@ describe('Given Auth class', () => {
         );
 
         try {
-          await mediaFiles.uploadImageToCloudinary('');
+          await mediaFiles.uploadImage('');
         } catch (error) {
           expect(error).toBeInstanceOf(TypeError);
           expect(HttpError).toThrow();
