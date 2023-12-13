@@ -1,25 +1,28 @@
+import multer from 'multer';
 import { Request, Response } from 'express';
 import { FileInterceptor } from './file.interceptor.js';
-import multer from 'multer';
 
 jest.mock('multer');
-describe('Given...', () => {
-  // Given
-  const midlewareMock = jest.fn();
-  const single = jest.fn().mockReturnValue(midlewareMock);
-  multer.diskStorage = jest
-    .fn()
-    .mockImplementation(({ filename }) => filename('', '', () => {}));
+
+describe('Given FileInterceptor', () => {
+  const middlewareMock = jest.fn();
+  const single = jest.fn().mockReturnValue(middlewareMock);
+
+  // Mock de la función diskStorage
+  multer.diskStorage = jest.fn().mockImplementation((options) => {
+    options.filename('', { originalname: 'filename' }, () => {});
+  });
+
   (multer as unknown as jest.Mock).mockReturnValue({ single });
 
-  describe('When we instantiate', () => {
+  describe('When we instantiate it', () => {
     const interceptor = new FileInterceptor();
 
-    test('Then it should be...', () => {
+    test('Then singleFileStore should be used', () => {
       interceptor.singleFileStore()({} as Request, {} as Response, jest.fn());
       expect(multer.diskStorage).toHaveBeenCalled();
       expect(single).toHaveBeenCalled();
-      expect(midlewareMock).toHaveBeenCalled();
+      expect(middlewareMock).toHaveBeenCalled();
     });
   });
 });

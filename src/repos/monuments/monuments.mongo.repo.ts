@@ -1,13 +1,12 @@
-import { Monument } from '../../entities/monument.model';
+import { Monument } from '../../entities/monument.model.js';
 import { Repository } from '../repo.js';
 import createDebug from 'debug';
-import { monumentModel } from './monuments.mongo.model';
+import { monumentModel } from './monuments.mongo.model.js';
 import { HttpError } from '../../types/http.error.js';
 import { UserMongoRepo } from '../users/users.mongo.repo.js';
-import mongoose from 'mongoose';
+import { UserModel } from '../users/users.mongo.model.js';
 
-const debug = createDebug('ProjectFinal:mongo:repo');
-
+const debug = createDebug('ProjectFInal:monuments:mongo:repo');
 export class MonumentsMongoRepo implements Repository<Monument> {
   userRepo: UserMongoRepo;
   constructor() {
@@ -23,7 +22,13 @@ export class MonumentsMongoRepo implements Repository<Monument> {
   }
 
   async getById(id: string): Promise<Monument> {
-    const result = await monumentModel.findById(id).exec();
+    const result = await monumentModel
+      .findById(id)
+      .populate('author', {
+        monuments: 0,
+      })
+      .exec();
+
     if (!result)
       throw new HttpError(404, 'Not Found', 'findById method not possible');
     return result;
@@ -46,7 +51,7 @@ export class MonumentsMongoRepo implements Repository<Monument> {
         ...newItem,
         author: userID,
       });
-
+      console.log(user);
       user.monuments.push(result);
       await this.userRepo.update(userID, user);
 
@@ -62,7 +67,7 @@ export class MonumentsMongoRepo implements Repository<Monument> {
       .findByIdAndUpdate(id, updatedItem, {
         new: true,
       })
-      .populate('author', { Monuments: 0 })
+      .populate('author', { monuments: 0 })
       .exec();
 
     if (!result) throw new HttpError(404, 'Not Found', 'Update not possible');
@@ -70,22 +75,15 @@ export class MonumentsMongoRepo implements Repository<Monument> {
   }
 
   async delete(id: string): Promise<void> {
-    const result = await monumentModel
+    const monumentItem = (await monumentModel
       .findByIdAndDelete(id)
-      .populate('author', {
-        Monuments: 0,
-      })
-      .exec();
-    if (!result) {
+      .exec()) as unknown as Monument;
+    if (!monumentItem) {
       throw new HttpError(404, 'Not Found', 'Delete not possible');
     }
 
-    const userID = result.author?.id;
-    const user = await this.userRepo.getById(userID);
-    user.monuments = user.monuments.filter((item) => {
-      const itemID = item as unknown as mongoose.mongo.ObjectId;
-      return itemID.toString() !== id;
-    });
-    await this.userRepo.update(userID, user);
+    await UserModel.findByIdAndUpdate(monumentItem.author, {
+      $pull: { monuments: id },
+    }).exec();
   }
 }

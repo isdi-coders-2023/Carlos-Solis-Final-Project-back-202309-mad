@@ -19,13 +19,13 @@ monumentRouter.get('/:id', monumentController.getById.bind(monumentController));
 monumentRouter.post(
   '/create',
   interceptor.authorization.bind(interceptor),
-  fileInterceptor.singleFileStore('img').bind(fileInterceptor),
+  fileInterceptor.singleFileStore('monumentImg').bind(fileInterceptor),
   monumentController.create.bind(monumentController)
 );
 monumentRouter.patch(
   '/:id',
   interceptor.authorization.bind(interceptor),
-  fileInterceptor.singleFileStore('img').bind(fileInterceptor),
+  fileInterceptor.singleFileStore('monumentImg').bind(fileInterceptor),
   monumentController.update.bind(monumentController)
 );
 monumentRouter.delete(

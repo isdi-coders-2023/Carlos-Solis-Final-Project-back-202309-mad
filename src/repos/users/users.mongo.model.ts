@@ -22,6 +22,7 @@ const usersSchema = new Schema<User>({
   surname: {
     type: String,
   },
+  monuments: [{ type: Schema.Types.ObjectId, ref: 'Monuments' }],
 });
 
 usersSchema.set('toJSON', {

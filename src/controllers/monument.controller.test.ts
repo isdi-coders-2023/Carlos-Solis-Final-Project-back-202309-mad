@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { MonumentController } from './monument.controller.js';
 import { MonumentsMongoRepo } from '../repos/monuments/monuments.mongo.repo.js';
-describe('Given RecipesController Class...', () => {
+describe('Given MonumentsController Class...', () => {
   let controller: MonumentController;
   let mockRequest: Request;
   let mockResponse: Response;
@@ -32,8 +32,8 @@ describe('Given RecipesController Class...', () => {
     controller = new MonumentController(mockRepo);
   });
 
-  describe('When we create a new recipe', () => {
-    test('Then the create method should create a new recipe with the proper info and the right image...', async () => {
+  describe('When we create a new monument', () => {
+    test('Then the create method should create a new monument with the proper info and the right image...', async () => {
       const mockRequest = {
         file: {
           path: 'valid/path/to/image.jpg',
