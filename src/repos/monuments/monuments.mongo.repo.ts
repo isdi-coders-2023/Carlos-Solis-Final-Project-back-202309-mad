@@ -67,22 +67,22 @@ export class MonumentsMongoRepo implements Repository<Monument> {
       .findByIdAndUpdate(id, updatedItem, {
         new: true,
       })
-      .populate('author', { monuments: 0 })
+      .populate('author', { Monuments: 0 })
       .exec();
-
+    console.log('Monument not found for ID:', id);
     if (!result) throw new HttpError(404, 'Not Found', 'Update not possible');
     return result;
   }
 
   async delete(id: string): Promise<void> {
-    const monumentItem = (await monumentModel
+    const result = (await monumentModel
       .findByIdAndDelete(id)
       .exec()) as unknown as Monument;
-    if (!monumentItem) {
+    if (!result) {
       throw new HttpError(404, 'Not Found', 'Delete not possible');
     }
 
-    await UserModel.findByIdAndUpdate(monumentItem.author, {
+    await UserModel.findByIdAndUpdate(result.author, {
       $pull: { monuments: id },
     }).exec();
   }

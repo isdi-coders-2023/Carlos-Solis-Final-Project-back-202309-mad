@@ -54,9 +54,10 @@ export class MonumentController extends Controller<Monument> {
         throw new HttpError(400, 'Bad Request', 'ID is missing');
       }
 
-      await this.repo.delete(id);
+      await this.repo.delete(req.params.id);
       res.status(204);
       res.statusMessage = 'No Content';
+      res.send('Deleted');
     } catch (error) {
       next(error);
     }
