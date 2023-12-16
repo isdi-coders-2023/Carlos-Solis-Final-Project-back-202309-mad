@@ -15,7 +15,7 @@ export class MediaFiles {
     });
 
     cloudinary.config({
-      secure: true, // Setting return "https" URLs
+      secure: true,
     });
 
     debug('instanciated');
@@ -28,8 +28,9 @@ export class MediaFiles {
         unique_filename: false,
         overwrite: true,
       });
+      console.log('desde upload', uploadApiResponse);
 
-      const avatar: ImgData = {
+      const imgData: ImgData = {
         url: uploadApiResponse.url,
         publicId: uploadApiResponse.publicId,
         size: uploadApiResponse.size,
@@ -37,7 +38,8 @@ export class MediaFiles {
         width: uploadApiResponse.width,
         format: uploadApiResponse.format,
       };
-      return avatar;
+      console.log('desde MediaFiles', imgData);
+      return imgData;
     } catch (err) {
       const error = (err as { error: Error }).error as Error;
       throw new HttpError(406, 'Not acceptable', error.message);

@@ -22,8 +22,8 @@ export class MonumentController extends Controller<Monument> {
       if (!req.file)
         throw new HttpError(406, 'Not Acceptable', ' Invalid multer file');
       const imgData = await this.cloudinaryService.uploadImage(req.file.path);
-      console.log(req.body);
-      req.body.img = imgData;
+      console.log('Desde Controller', imgData);
+      req.body.monumentImg = imgData;
       const result = await this.repo.create(req.body);
       res.json(result);
     } catch (error) {
@@ -37,7 +37,7 @@ export class MonumentController extends Controller<Monument> {
 
       if (req.file) {
         const imgData = await this.cloudinaryService.uploadImage(req.file.path);
-        req.body.img = imgData;
+        req.body.monumentImg = imgData;
       }
 
       const result = await this.repo.update(req.params.id, req.body);
