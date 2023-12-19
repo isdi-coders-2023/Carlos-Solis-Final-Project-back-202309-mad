@@ -5,7 +5,7 @@ import { UserModel } from './users.mongo.model.js';
 import { Auth } from '../../services/auth.js';
 import { HttpError } from '../../types/http.error.js';
 
-const debug = createDebug('FinalProject:users:mongo:repo');
+const debug = createDebug('ProjectFinal:users:mongo:repo');
 export class UserMongoRepo implements Repository<User> {
   constructor() {
     debug('Instanciated');
@@ -18,7 +18,7 @@ export class UserMongoRepo implements Repository<User> {
 
   async getById(id: string): Promise<User> {
     const result = await UserModel.findById(id).exec();
-    if (!result) throw new HttpError(404, 'Not Found', 'GetByid not possible');
+    if (!result) throw new HttpError(404, 'Not Found', 'GetById not possible');
     return result;
   }
 

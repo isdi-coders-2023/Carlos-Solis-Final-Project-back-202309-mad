@@ -1,12 +1,13 @@
-import { Monument } from '../../entities/monument.model.js';
-import { Repository } from '../repo.js';
+import { Monument } from '../../entities/monument.model';
 import createDebug from 'debug';
 import { monumentModel } from './monuments.mongo.model.js';
 import { HttpError } from '../../types/http.error.js';
 import { UserMongoRepo } from '../users/users.mongo.repo.js';
+import { Repository } from '../repo.js';
 import { UserModel } from '../users/users.mongo.model.js';
 
-const debug = createDebug('ProjectFInal:monuments:mongo:repo');
+const debug = createDebug('ProjectFinal:mongo:repo');
+
 export class MonumentsMongoRepo implements Repository<Monument> {
   userRepo: UserMongoRepo;
   constructor() {
@@ -15,7 +16,10 @@ export class MonumentsMongoRepo implements Repository<Monument> {
   }
 
   async getAll(): Promise<Monument[]> {
-    const result = await monumentModel.find().exec();
+    const result = await monumentModel
+      .find()
+      .populate('author', { monuments: 0 })
+      .exec();
     if (!result)
       throw new HttpError(404, 'Not Found', 'getAll method not possible');
     return result;
@@ -36,7 +40,7 @@ export class MonumentsMongoRepo implements Repository<Monument> {
 
   async create(newItem: Omit<Monument, 'id'>): Promise<Monument> {
     try {
-      const userID = newItem.author?.id;
+      const userID = newItem.author.id;
       if (!userID) {
         throw new HttpError(400, 'Bad Request', 'Author ID is missing');
       }
@@ -51,7 +55,7 @@ export class MonumentsMongoRepo implements Repository<Monument> {
         ...newItem,
         author: userID,
       });
-      console.log(user);
+
       user.monuments.push(result);
       await this.userRepo.update(userID, user);
 
@@ -67,9 +71,9 @@ export class MonumentsMongoRepo implements Repository<Monument> {
       .findByIdAndUpdate(id, updatedItem, {
         new: true,
       })
-      .populate('author', { Monuments: 0 })
+      .populate('author', { monuments: 0 })
       .exec();
-    console.log('Monument not found for ID:', id);
+
     if (!result) throw new HttpError(404, 'Not Found', 'Update not possible');
     return result;
   }

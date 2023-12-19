@@ -6,7 +6,7 @@ import { Repository } from '../repos/repo';
 export abstract class Controller<T extends { id: unknown }> {
   constructor(protected repo: Repository<T>) {}
 
-  async getAll(_req: Request, res: Response, next: NextFunction) {
+  async getAll(req: Request, res: Response, next: NextFunction) {
     try {
       const data = await this.repo.getAll();
       res.json(data);

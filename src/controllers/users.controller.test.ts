@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
-import { UsersController } from './users.controllers.js';
+import { UserController } from './users.controllers.js';
 import { UserMongoRepo } from '../repos/users/users.mongo.repo.js';
 import { Auth } from '../services/auth.js';
 jest.mock('../services/auth.js');
-describe('Given UsersController class', () => {
-  let controller: UsersController;
+describe('Given UserController class', () => {
+  let controller: UserController;
   let mockRequest: Request;
   let mockResponse: Response;
   let mockNext: jest.Mock;
@@ -34,7 +34,7 @@ describe('Given UsersController class', () => {
         getAll: jest.fn().mockResolvedValue([{}]),
       } as unknown as UserMongoRepo;
 
-      controller = new UsersController(mockRepo);
+      controller = new UserController(mockRepo);
     });
     test('Then create should...', async () => {
       await controller.create(mockRequest, mockResponse, mockNext);
@@ -67,7 +67,7 @@ describe('Given UsersController class', () => {
         getAll: jest.fn().mockRejectedValue(mockError),
       } as unknown as UserMongoRepo;
 
-      controller = new UsersController(mockRepo);
+      controller = new UserController(mockRepo);
     });
 
     test('Then create should...', async () => {

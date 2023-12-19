@@ -43,7 +43,7 @@ monumentsSchema.set('toJSON', {
 });
 
 export const monumentModel = model<Monument>(
-  'monument',
+  'Monument',
   monumentsSchema,
   'monuments'
 );

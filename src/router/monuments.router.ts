@@ -25,11 +25,13 @@ monumentRouter.post(
 monumentRouter.patch(
   '/:id',
   interceptor.authorization.bind(interceptor),
+  interceptor.authentication.bind(interceptor),
   fileInterceptor.singleFileStore('monumentImg').bind(fileInterceptor),
   monumentController.update.bind(monumentController)
 );
 monumentRouter.delete(
   '/:id',
   interceptor.authorization.bind(interceptor),
+  interceptor.authentication.bind(interceptor),
   monumentController.delete.bind(monumentController)
 );
