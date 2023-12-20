@@ -9,7 +9,8 @@
     "start:dev": "cross-env PORT=2800 DEBUG=ProjectFinal* nodemon dist/index.js",
     "build": "tsc -w",
     "test": "jest --watchAll --coverage",
-    "test:prod": "jest --watchAll --coverage --watchAll=false --passWithNoTests"
+    "test:prod": "jest --watchAll --coverage --watchAll=false --passWithNoTests",
+    "build:render": "tsc"
   },
   "keywords": [],
   "author": "Carlos Solís",

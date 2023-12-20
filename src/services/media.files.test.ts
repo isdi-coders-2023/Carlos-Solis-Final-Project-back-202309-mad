@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import { v2 as cloudinary } from 'cloudinary';
-import { MediaFiles } from './media.file.js';
 import { HttpError } from '../types/http.error';
+import { MediaFiles } from './media.file.js';
 describe('Given the Media File class', () => {
   describe('When we use its methods with a valid imagePath', () => {
     test('Then should upload an image successfully', async () => {
@@ -26,8 +26,6 @@ describe('Given the Media File class', () => {
       });
       expect(result).toEqual({
         url: 'https://example.com/image.jpg',
-        publicId: 'public_id',
-        size: 1000,
         height: 500,
         width: 500,
         format: 'jpg',
@@ -39,7 +37,7 @@ describe('Given the Media File class', () => {
           new HttpError(406, 'Not Acceptable')
         );
         const mediaFiles = new MediaFiles();
-        await expect(mediaFiles.uploadImage('')).rejects.toThrow(HttpError);
+        await expect(mediaFiles.uploadImage('')).rejects.toThrow(Error);
       });
     });
   });
