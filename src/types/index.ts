@@ -1,6 +1,6 @@
 import { createServer } from 'http';
-import { app } from './app.js';
-import { dbConnect } from './services/db.connect.js';
+import { app } from '../app.js';
+import { dbConnect } from '../services/db.connect.js';
 import createDebug from 'debug';
 
 const PORT = process.env.PORT || 3030;
