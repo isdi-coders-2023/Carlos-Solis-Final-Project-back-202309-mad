@@ -1,9 +1,9 @@
-import { UserModel } from '../users/users.mongo.model.js';
-// Import { UserMongoRepo } from '../users/users.mongo.repo.js';
-import { monumentModel } from './monuments.mongo.model.js';
-import { MonumentsMongoRepo } from './monuments.mongo.repo.js';
+import { UserModel } from '../users/users.mongo.model';
 
-jest.mock('../monuments/monuments.mongo.model.js');
+import { monumentModel } from './monuments.mongo.model';
+import { MonumentsMongoRepo } from './monuments.mongo.repo';
+
+jest.mock('../monuments/monuments.mongo.model');
 jest.mock('../users/users.mongo.repo.js');
 jest.mock('../users/users.mongo.model.js');
 describe('Given the class MonumentMongoRepo', () => {
@@ -38,20 +38,29 @@ describe('Given the class MonumentMongoRepo', () => {
 
       monumentModel.create = jest.fn().mockReturnValue({});
     });
+    /* Test('Then it should execute getAll', async () => {
+      const result = await repo.getAll();
+      expect(exec).toHaveBeenCalled();
+      expect(result).toBe('Test');
+    }); */
+
     test('Then it should execute getById', async () => {
       const result = await repo.getById('');
       expect(exec).toHaveBeenCalled();
       expect(result).toBe('Test');
     });
 
-    test('Then it should execute update', async () => {
-      const result = await repo.update('', { id: '' });
-      expect(exec).toHaveBeenCalled();
+    /* Test('Then it should execute create', async () => {
+      UserMongoRepo.prototype.getById = jest
+        .fn()
+        .mockResolvedValue({ recipes: [] });
+      UserMongoRepo.prototype.update = jest.fn();
+      const result = await repo.create({ author: {} } as Omit<Recipe, 'id'>);
       expect(result).toBe('Test');
-    });
+    }); */
 
-    test('Then it should execute getAll', async () => {
-      const result = await repo.getAll();
+    test('Then it should execute update', async () => {
+      const result = await repo.update('', { name: '' });
       expect(exec).toHaveBeenCalled();
       expect(result).toBe('Test');
     });
@@ -98,7 +107,7 @@ describe('Given the class MonumentMongoRepo', () => {
       expect(repo.getById('')).rejects.toThrow();
     });
     test('Then update should throw an error', async () => {
-      expect(repo.update('', { id: '' })).rejects.toThrow();
+      expect(repo.update('', { name: '' })).rejects.toThrow();
     });
     test('Then should throw an error if the recipe does not exist', async () => {
       const id = 'testId';

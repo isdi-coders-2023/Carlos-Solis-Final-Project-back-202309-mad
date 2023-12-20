@@ -18,7 +18,7 @@ export class AuthInterceptor {
         throw new HttpError(401, 'Unauthorized');
       const token = tokenHeader.split(' ')[1];
       const tokenPayload = Auth.verifyAndGetPayload(token);
-      req.body.userId = tokenPayload.id; // Configurar req.body.userId aquí
+      req.body.userId = tokenPayload.id;
       next();
     } catch (error) {
       next(error);

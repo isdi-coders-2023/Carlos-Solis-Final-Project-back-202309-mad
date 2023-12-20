@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { UserController } from './users.controllers.js';
+import { UserController } from './users.controllers';
 import { UserMongoRepo } from '../repos/users/users.mongo.repo.js';
 import { Auth } from '../services/auth.js';
 jest.mock('../services/auth.js');
-describe('Given UserController class', () => {
+describe('Given UsersController class', () => {
   let controller: UserController;
   let mockRequest: Request;
   let mockResponse: Response;

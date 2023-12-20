@@ -20,8 +20,7 @@ export class MonumentsMongoRepo implements Repository<Monument> {
       .find()
       .populate('author', { monuments: 0 })
       .exec();
-    if (!result)
-      throw new HttpError(404, 'Not Found', 'getAll method not possible');
+
     return result;
   }
 
