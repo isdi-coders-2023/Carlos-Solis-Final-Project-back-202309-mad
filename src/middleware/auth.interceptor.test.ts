@@ -1,7 +1,8 @@
 import { AuthInterceptor } from './auth.interceptor.js';
-import { Request, Response, NextFunction } from 'express';
-import { Auth } from '../services/auth.js';
 import { HttpError } from '../types/http.error.js';
+import { Auth } from '../services/auth.js';
+import { NextFunction, Request, Response } from 'express';
+import { MonumentsMongoRepo } from '../repos/monuments/monuments.mongo.repo.js';
 
 jest.mock('../services/auth.js');
 
@@ -21,13 +22,13 @@ describe('Given AuthInterceptor class', () => {
       const res = {} as Response;
       const next = jest.fn() as NextFunction;
 
-      const mockPayload = { id: 'userId123', role: 'user' };
+      const mockPayload = { id: 'userId' };
       (Auth.verifyAndGetPayload as jest.Mock).mockReturnValue(mockPayload);
 
       authInterceptor.authorization(req, res, next);
 
       expect(Auth.verifyAndGetPayload).toHaveBeenCalledWith('validToken');
-      expect(mockPayload).toStrictEqual({ id: 'userId123', role: 'user' });
+      expect(mockPayload).toStrictEqual({ id: 'userId' });
       expect(next).toHaveBeenCalled();
     });
     test('Then should call next with an HttpError when Authorization header is missing or invalid', async () => {
@@ -37,10 +38,68 @@ describe('Given AuthInterceptor class', () => {
       } as unknown as Request;
       const res = {} as Response;
       const next = jest.fn() as NextFunction;
-
       authInterceptor.authorization(req, res, next);
-
       expect(next).toHaveBeenCalledWith(expect.any(HttpError));
+    });
+  });
+
+  jest.mock('../repos/monuments/monuments.mongo.repo.ts', () => ({
+    RecipesMongoRepo: jest.fn().mockImplementation(() => ({
+      getById: jest.fn().mockResolvedValue({
+        author: { id: 'userId' },
+      }),
+    })),
+  }));
+
+  describe('AuthInterceptor', () => {
+    const res = {} as Response;
+    const next = jest.fn() as NextFunction;
+    const req = {
+      body: { id: 'userId' },
+      params: { id: 'recipeId' },
+    } as unknown as Request;
+    describe('authentication method', () => {
+      test('should call next when the user is the author of the recipe', async () => {
+        await authInterceptor.authentication(req, res, next);
+
+        expect(next).toHaveBeenCalled();
+      });
+      test('Then should call next with an HttpError when the user is not the author of the recipe', async () => {
+        const mockRecipe = { author: { id: 'otherUserId' } };
+        const mockRecipesMongoRepoInstance = {
+          getById: jest.fn().mockResolvedValue(mockRecipe),
+        };
+
+        jest
+          .spyOn(MonumentsMongoRepo.prototype, 'getById')
+          .mockImplementation(mockRecipesMongoRepoInstance.getById);
+
+        await authInterceptor.authentication(req, res, next);
+
+        expect(mockRecipesMongoRepoInstance.getById).toHaveBeenCalledWith(
+          'recipeId'
+        );
+        expect(next).toHaveBeenCalledWith(expect.any(HttpError));
+      });
+
+      test('Then should call next with an HttpError when there is an error fetching the recipe', async () => {
+        const mockRecipesMongoRepoInstance = {
+          getById: jest
+            .fn()
+            .mockRejectedValue(new HttpError(500, 'Database error')),
+        };
+
+        jest
+          .spyOn(MonumentsMongoRepo.prototype, 'getById')
+          .mockImplementation(mockRecipesMongoRepoInstance.getById);
+
+        await authInterceptor.authentication(req, res, next);
+
+        expect(mockRecipesMongoRepoInstance.getById).toHaveBeenCalledWith(
+          'recipeId'
+        );
+        expect(next).toHaveBeenCalledWith(expect.any(HttpError));
+      });
     });
   });
 });

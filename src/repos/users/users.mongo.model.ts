@@ -17,11 +17,11 @@ const usersSchema = new Schema<User>({
   },
   name: {
     type: String,
-    required: true,
   },
   surname: {
     type: String,
   },
+  monuments: [{ type: Schema.Types.ObjectId, ref: 'monuments' }],
 });
 
 usersSchema.set('toJSON', {
